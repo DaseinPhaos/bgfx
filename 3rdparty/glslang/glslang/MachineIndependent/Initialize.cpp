@@ -53,6 +53,7 @@
 
 #include "Initialize.h"
 #include "span.h"
+#include <array>
 
 namespace glslang {
 
@@ -140,17 +141,17 @@ struct Versioning {
 EProfile EDesktopProfile = static_cast<EProfile>(ENoProfile | ECoreProfile | ECompatibilityProfile);
 
 // Declare pointers to put into the table for versioning.
-    const std::array Es300Desktop130Version = { Versioning{ EEsProfile,      0, 300, 0, nullptr },
-                                                Versioning{ EDesktopProfile, 0, 130, 0, nullptr },
-                                              };
+    const std::array<Versioning, 2> Es300Desktop130Version = {{ { EEsProfile,      0, 300, 0, nullptr },
+                                                { EDesktopProfile, 0, 130, 0, nullptr }
+                                              }};
 
-    const std::array Es310Desktop400Version = { Versioning{ EEsProfile,      0, 310, 0, nullptr },
-                                                Versioning{ EDesktopProfile, 0, 400, 0, nullptr },
-                                              };
+    const std::array<Versioning, 2> Es310Desktop400Version = {{ { EEsProfile,      0, 310, 0, nullptr },
+                                                { EDesktopProfile, 0, 400, 0, nullptr }
+                                              }};
 
-    const std::array Es310Desktop450Version = { Versioning{ EEsProfile,      0, 310, 0, nullptr },
-                                                Versioning{ EDesktopProfile, 0, 450, 0, nullptr },
-                                              };
+    const std::array<Versioning, 2> Es310Desktop450Version = {{ { EEsProfile,      0, 310, 0, nullptr },
+                                                { EDesktopProfile, 0, 450, 0, nullptr }
+                                              }};
 
 // The main descriptor of what a set of function prototypes can look like, and
 // a pointer to extra versioning information, when needed.
@@ -172,95 +173,95 @@ struct BuiltInFunction {
 //
 // Table is terminated by an OpNull TOperator.
 
-const std::array BaseFunctions = {
+const std::array<BuiltInFunction, 79> BaseFunctions = {{
 //    TOperator,           name,       arg-count,   ArgType,   ArgClass,     versioning
 //    ---------            ----        ---------    -------    --------      ----------
-    BuiltInFunction{ EOpRadians,          "radians",          1,   TypeF,     ClassRegular, {} },
-    BuiltInFunction{ EOpDegrees,          "degrees",          1,   TypeF,     ClassRegular, {} },
-    BuiltInFunction{ EOpSin,              "sin",              1,   TypeF,     ClassRegular, {} },
-    BuiltInFunction{ EOpCos,              "cos",              1,   TypeF,     ClassRegular, {} },
-    BuiltInFunction{ EOpTan,              "tan",              1,   TypeF,     ClassRegular, {} },
-    BuiltInFunction{ EOpAsin,             "asin",             1,   TypeF,     ClassRegular, {} },
-    BuiltInFunction{ EOpAcos,             "acos",             1,   TypeF,     ClassRegular, {} },
-    BuiltInFunction{ EOpAtan,             "atan",             2,   TypeF,     ClassRegular, {} },
-    BuiltInFunction{ EOpAtan,             "atan",             1,   TypeF,     ClassRegular, {} },
-    BuiltInFunction{ EOpPow,              "pow",              2,   TypeF,     ClassRegular, {} },
-    BuiltInFunction{ EOpExp,              "exp",              1,   TypeF,     ClassRegular, {} },
-    BuiltInFunction{ EOpLog,              "log",              1,   TypeF,     ClassRegular, {} },
-    BuiltInFunction{ EOpExp2,             "exp2",             1,   TypeF,     ClassRegular, {} },
-    BuiltInFunction{ EOpLog2,             "log2",             1,   TypeF,     ClassRegular, {} },
-    BuiltInFunction{ EOpSqrt,             "sqrt",             1,   TypeF,     ClassRegular, {} },
-    BuiltInFunction{ EOpInverseSqrt,      "inversesqrt",      1,   TypeF,     ClassRegular, {} },
-    BuiltInFunction{ EOpAbs,              "abs",              1,   TypeF,     ClassRegular, {} },
-    BuiltInFunction{ EOpSign,             "sign",             1,   TypeF,     ClassRegular, {} },
-    BuiltInFunction{ EOpFloor,            "floor",            1,   TypeF,     ClassRegular, {} },
-    BuiltInFunction{ EOpCeil,             "ceil",             1,   TypeF,     ClassRegular, {} },
-    BuiltInFunction{ EOpFract,            "fract",            1,   TypeF,     ClassRegular, {} },
-    BuiltInFunction{ EOpMod,              "mod",              2,   TypeF,     ClassLS,      {} },
-    BuiltInFunction{ EOpMin,              "min",              2,   TypeF,     ClassLS,      {} },
-    BuiltInFunction{ EOpMax,              "max",              2,   TypeF,     ClassLS,      {} },
-    BuiltInFunction{ EOpClamp,            "clamp",            3,   TypeF,     ClassLS2,     {} },
-    BuiltInFunction{ EOpMix,              "mix",              3,   TypeF,     ClassLS,      {} },
-    BuiltInFunction{ EOpStep,             "step",             2,   TypeF,     ClassFS,      {} },
-    BuiltInFunction{ EOpSmoothStep,       "smoothstep",       3,   TypeF,     ClassFS2,     {} },
-    BuiltInFunction{ EOpNormalize,        "normalize",        1,   TypeF,     ClassRegular, {} },
-    BuiltInFunction{ EOpFaceForward,      "faceforward",      3,   TypeF,     ClassRegular, {} },
-    BuiltInFunction{ EOpReflect,          "reflect",          2,   TypeF,     ClassRegular, {} },
-    BuiltInFunction{ EOpRefract,          "refract",          3,   TypeF,     ClassXLS,     {} },
-    BuiltInFunction{ EOpLength,           "length",           1,   TypeF,     ClassRS,      {} },
-    BuiltInFunction{ EOpDistance,         "distance",         2,   TypeF,     ClassRS,      {} },
-    BuiltInFunction{ EOpDot,              "dot",              2,   TypeF,     ClassRS,      {} },
-    BuiltInFunction{ EOpCross,            "cross",            2,   TypeF,     ClassV3,      {} },
-    BuiltInFunction{ EOpLessThan,         "lessThan",         2,   TypeFI,    ClassBNS,     {} },
-    BuiltInFunction{ EOpLessThanEqual,    "lessThanEqual",    2,   TypeFI,    ClassBNS,     {} },
-    BuiltInFunction{ EOpGreaterThan,      "greaterThan",      2,   TypeFI,    ClassBNS,     {} },
-    BuiltInFunction{ EOpGreaterThanEqual, "greaterThanEqual", 2,   TypeFI,    ClassBNS,     {} },
-    BuiltInFunction{ EOpVectorEqual,      "equal",            2,   TypeFIB,   ClassBNS,     {} },
-    BuiltInFunction{ EOpVectorNotEqual,   "notEqual",         2,   TypeFIB,   ClassBNS,     {} },
-    BuiltInFunction{ EOpAny,              "any",              1,   TypeB,     ClassRSNS,    {} },
-    BuiltInFunction{ EOpAll,              "all",              1,   TypeB,     ClassRSNS,    {} },
-    BuiltInFunction{ EOpVectorLogicalNot, "not",              1,   TypeB,     ClassNS,      {} },
-    BuiltInFunction{ EOpSinh,             "sinh",             1,   TypeF,     ClassRegular, {Es300Desktop130Version} },
-    BuiltInFunction{ EOpCosh,             "cosh",             1,   TypeF,     ClassRegular, {Es300Desktop130Version} },
-    BuiltInFunction{ EOpTanh,             "tanh",             1,   TypeF,     ClassRegular, {Es300Desktop130Version} },
-    BuiltInFunction{ EOpAsinh,            "asinh",            1,   TypeF,     ClassRegular, {Es300Desktop130Version} },
-    BuiltInFunction{ EOpAcosh,            "acosh",            1,   TypeF,     ClassRegular, {Es300Desktop130Version} },
-    BuiltInFunction{ EOpAtanh,            "atanh",            1,   TypeF,     ClassRegular, {Es300Desktop130Version} },
-    BuiltInFunction{ EOpAbs,              "abs",              1,   TypeI,     ClassRegular, {Es300Desktop130Version} },
-    BuiltInFunction{ EOpSign,             "sign",             1,   TypeI,     ClassRegular, {Es300Desktop130Version} },
-    BuiltInFunction{ EOpTrunc,            "trunc",            1,   TypeF,     ClassRegular, {Es300Desktop130Version} },
-    BuiltInFunction{ EOpRound,            "round",            1,   TypeF,     ClassRegular, {Es300Desktop130Version} },
-    BuiltInFunction{ EOpRoundEven,        "roundEven",        1,   TypeF,     ClassRegular, {Es300Desktop130Version} },
-    BuiltInFunction{ EOpModf,             "modf",             2,   TypeF,     ClassLO,      {Es300Desktop130Version} },
-    BuiltInFunction{ EOpMin,              "min",              2,   TypeIU,    ClassLS,      {Es300Desktop130Version} },
-    BuiltInFunction{ EOpMax,              "max",              2,   TypeIU,    ClassLS,      {Es300Desktop130Version} },
-    BuiltInFunction{ EOpClamp,            "clamp",            3,   TypeIU,    ClassLS2,     {Es300Desktop130Version} },
-    BuiltInFunction{ EOpMix,              "mix",              3,   TypeF,     ClassLB,      {Es300Desktop130Version} },
-    BuiltInFunction{ EOpIsInf,            "isinf",            1,   TypeF,     ClassB,       {Es300Desktop130Version} },
-    BuiltInFunction{ EOpIsNan,            "isnan",            1,   TypeF,     ClassB,       {Es300Desktop130Version} },
-    BuiltInFunction{ EOpLessThan,         "lessThan",         2,   TypeU,     ClassBNS,     {Es300Desktop130Version} },
-    BuiltInFunction{ EOpLessThanEqual,    "lessThanEqual",    2,   TypeU,     ClassBNS,     {Es300Desktop130Version} },
-    BuiltInFunction{ EOpGreaterThan,      "greaterThan",      2,   TypeU,     ClassBNS,     {Es300Desktop130Version} },
-    BuiltInFunction{ EOpGreaterThanEqual, "greaterThanEqual", 2,   TypeU,     ClassBNS,     {Es300Desktop130Version} },
-    BuiltInFunction{ EOpVectorEqual,      "equal",            2,   TypeU,     ClassBNS,     {Es300Desktop130Version} },
-    BuiltInFunction{ EOpVectorNotEqual,   "notEqual",         2,   TypeU,     ClassBNS,     {Es300Desktop130Version} },
-    BuiltInFunction{ EOpAtomicAdd,        "atomicAdd",        2,   TypeIU,    ClassV1FIOCV, {Es310Desktop400Version} },
-    BuiltInFunction{ EOpAtomicMin,        "atomicMin",        2,   TypeIU,    ClassV1FIOCV, {Es310Desktop400Version} },
-    BuiltInFunction{ EOpAtomicMax,        "atomicMax",        2,   TypeIU,    ClassV1FIOCV, {Es310Desktop400Version} },
-    BuiltInFunction{ EOpAtomicAnd,        "atomicAnd",        2,   TypeIU,    ClassV1FIOCV, {Es310Desktop400Version} },
-    BuiltInFunction{ EOpAtomicOr,         "atomicOr",         2,   TypeIU,    ClassV1FIOCV, {Es310Desktop400Version} },
-    BuiltInFunction{ EOpAtomicXor,        "atomicXor",        2,   TypeIU,    ClassV1FIOCV, {Es310Desktop400Version} },
-    BuiltInFunction{ EOpAtomicExchange,   "atomicExchange",   2,   TypeIU,    ClassV1FIOCV, {Es310Desktop400Version} },
-    BuiltInFunction{ EOpAtomicCompSwap,   "atomicCompSwap",   3,   TypeIU,    ClassV1FIOCV, {Es310Desktop400Version} },
-    BuiltInFunction{ EOpMix,              "mix",              3,   TypeB,     ClassRegular, {Es310Desktop450Version} },
-    BuiltInFunction{ EOpMix,              "mix",              3,   TypeIU,    ClassLB,      {Es310Desktop450Version} },
-};
+    { EOpRadians,          "radians",          1,   TypeF,     ClassRegular, {} },
+    { EOpDegrees,          "degrees",          1,   TypeF,     ClassRegular, {} },
+    { EOpSin,              "sin",              1,   TypeF,     ClassRegular, {} },
+    { EOpCos,              "cos",              1,   TypeF,     ClassRegular, {} },
+    { EOpTan,              "tan",              1,   TypeF,     ClassRegular, {} },
+    { EOpAsin,             "asin",             1,   TypeF,     ClassRegular, {} },
+    { EOpAcos,             "acos",             1,   TypeF,     ClassRegular, {} },
+    { EOpAtan,             "atan",             2,   TypeF,     ClassRegular, {} },
+    { EOpAtan,             "atan",             1,   TypeF,     ClassRegular, {} },
+    { EOpPow,              "pow",              2,   TypeF,     ClassRegular, {} },
+    { EOpExp,              "exp",              1,   TypeF,     ClassRegular, {} },
+    { EOpLog,              "log",              1,   TypeF,     ClassRegular, {} },
+    { EOpExp2,             "exp2",             1,   TypeF,     ClassRegular, {} },
+    { EOpLog2,             "log2",             1,   TypeF,     ClassRegular, {} },
+    { EOpSqrt,             "sqrt",             1,   TypeF,     ClassRegular, {} },
+    { EOpInverseSqrt,      "inversesqrt",      1,   TypeF,     ClassRegular, {} },
+    { EOpAbs,              "abs",              1,   TypeF,     ClassRegular, {} },
+    { EOpSign,             "sign",             1,   TypeF,     ClassRegular, {} },
+    { EOpFloor,            "floor",            1,   TypeF,     ClassRegular, {} },
+    { EOpCeil,             "ceil",             1,   TypeF,     ClassRegular, {} },
+    { EOpFract,            "fract",            1,   TypeF,     ClassRegular, {} },
+    { EOpMod,              "mod",              2,   TypeF,     ClassLS,      {} },
+    { EOpMin,              "min",              2,   TypeF,     ClassLS,      {} },
+    { EOpMax,              "max",              2,   TypeF,     ClassLS,      {} },
+    { EOpClamp,            "clamp",            3,   TypeF,     ClassLS2,     {} },
+    { EOpMix,              "mix",              3,   TypeF,     ClassLS,      {} },
+    { EOpStep,             "step",             2,   TypeF,     ClassFS,      {} },
+    { EOpSmoothStep,       "smoothstep",       3,   TypeF,     ClassFS2,     {} },
+    { EOpNormalize,        "normalize",        1,   TypeF,     ClassRegular, {} },
+    { EOpFaceForward,      "faceforward",      3,   TypeF,     ClassRegular, {} },
+    { EOpReflect,          "reflect",          2,   TypeF,     ClassRegular, {} },
+    { EOpRefract,          "refract",          3,   TypeF,     ClassXLS,     {} },
+    { EOpLength,           "length",           1,   TypeF,     ClassRS,      {} },
+    { EOpDistance,         "distance",         2,   TypeF,     ClassRS,      {} },
+    { EOpDot,              "dot",              2,   TypeF,     ClassRS,      {} },
+    { EOpCross,            "cross",            2,   TypeF,     ClassV3,      {} },
+    { EOpLessThan,         "lessThan",         2,   TypeFI,    ClassBNS,     {} },
+    { EOpLessThanEqual,    "lessThanEqual",    2,   TypeFI,    ClassBNS,     {} },
+    { EOpGreaterThan,      "greaterThan",      2,   TypeFI,    ClassBNS,     {} },
+    { EOpGreaterThanEqual, "greaterThanEqual", 2,   TypeFI,    ClassBNS,     {} },
+    { EOpVectorEqual,      "equal",            2,   TypeFIB,   ClassBNS,     {} },
+    { EOpVectorNotEqual,   "notEqual",         2,   TypeFIB,   ClassBNS,     {} },
+    { EOpAny,              "any",              1,   TypeB,     ClassRSNS,    {} },
+    { EOpAll,              "all",              1,   TypeB,     ClassRSNS,    {} },
+    { EOpVectorLogicalNot, "not",              1,   TypeB,     ClassNS,      {} },
+    { EOpSinh,             "sinh",             1,   TypeF,     ClassRegular, {Es300Desktop130Version} },
+    { EOpCosh,             "cosh",             1,   TypeF,     ClassRegular, {Es300Desktop130Version} },
+    { EOpTanh,             "tanh",             1,   TypeF,     ClassRegular, {Es300Desktop130Version} },
+    { EOpAsinh,            "asinh",            1,   TypeF,     ClassRegular, {Es300Desktop130Version} },
+    { EOpAcosh,            "acosh",            1,   TypeF,     ClassRegular, {Es300Desktop130Version} },
+    { EOpAtanh,            "atanh",            1,   TypeF,     ClassRegular, {Es300Desktop130Version} },
+    { EOpAbs,              "abs",              1,   TypeI,     ClassRegular, {Es300Desktop130Version} },
+    { EOpSign,             "sign",             1,   TypeI,     ClassRegular, {Es300Desktop130Version} },
+    { EOpTrunc,            "trunc",            1,   TypeF,     ClassRegular, {Es300Desktop130Version} },
+    { EOpRound,            "round",            1,   TypeF,     ClassRegular, {Es300Desktop130Version} },
+    { EOpRoundEven,        "roundEven",        1,   TypeF,     ClassRegular, {Es300Desktop130Version} },
+    { EOpModf,             "modf",             2,   TypeF,     ClassLO,      {Es300Desktop130Version} },
+    { EOpMin,              "min",              2,   TypeIU,    ClassLS,      {Es300Desktop130Version} },
+    { EOpMax,              "max",              2,   TypeIU,    ClassLS,      {Es300Desktop130Version} },
+    { EOpClamp,            "clamp",            3,   TypeIU,    ClassLS2,     {Es300Desktop130Version} },
+    { EOpMix,              "mix",              3,   TypeF,     ClassLB,      {Es300Desktop130Version} },
+    { EOpIsInf,            "isinf",            1,   TypeF,     ClassB,       {Es300Desktop130Version} },
+    { EOpIsNan,            "isnan",            1,   TypeF,     ClassB,       {Es300Desktop130Version} },
+    { EOpLessThan,         "lessThan",         2,   TypeU,     ClassBNS,     {Es300Desktop130Version} },
+    { EOpLessThanEqual,    "lessThanEqual",    2,   TypeU,     ClassBNS,     {Es300Desktop130Version} },
+    { EOpGreaterThan,      "greaterThan",      2,   TypeU,     ClassBNS,     {Es300Desktop130Version} },
+    { EOpGreaterThanEqual, "greaterThanEqual", 2,   TypeU,     ClassBNS,     {Es300Desktop130Version} },
+    { EOpVectorEqual,      "equal",            2,   TypeU,     ClassBNS,     {Es300Desktop130Version} },
+    { EOpVectorNotEqual,   "notEqual",         2,   TypeU,     ClassBNS,     {Es300Desktop130Version} },
+    { EOpAtomicAdd,        "atomicAdd",        2,   TypeIU,    ClassV1FIOCV, {Es310Desktop400Version} },
+    { EOpAtomicMin,        "atomicMin",        2,   TypeIU,    ClassV1FIOCV, {Es310Desktop400Version} },
+    { EOpAtomicMax,        "atomicMax",        2,   TypeIU,    ClassV1FIOCV, {Es310Desktop400Version} },
+    { EOpAtomicAnd,        "atomicAnd",        2,   TypeIU,    ClassV1FIOCV, {Es310Desktop400Version} },
+    { EOpAtomicOr,         "atomicOr",         2,   TypeIU,    ClassV1FIOCV, {Es310Desktop400Version} },
+    { EOpAtomicXor,        "atomicXor",        2,   TypeIU,    ClassV1FIOCV, {Es310Desktop400Version} },
+    { EOpAtomicExchange,   "atomicExchange",   2,   TypeIU,    ClassV1FIOCV, {Es310Desktop400Version} },
+    { EOpAtomicCompSwap,   "atomicCompSwap",   3,   TypeIU,    ClassV1FIOCV, {Es310Desktop400Version} },
+    { EOpMix,              "mix",              3,   TypeB,     ClassRegular, {Es310Desktop450Version} },
+    { EOpMix,              "mix",              3,   TypeIU,    ClassLB,      {Es310Desktop450Version} }
+}};
 
-const std::array DerivativeFunctions = {
-    BuiltInFunction{ EOpDPdx,             "dFdx",             1,   TypeF,     ClassRegular, {} },
-    BuiltInFunction{ EOpDPdy,             "dFdy",             1,   TypeF,     ClassRegular, {} },
-    BuiltInFunction{ EOpFwidth,           "fwidth",           1,   TypeF,     ClassRegular, {} },
-};
+const std::array<BuiltInFunction, 3> DerivativeFunctions = {{
+    { EOpDPdx,             "dFdx",             1,   TypeF,     ClassRegular, {} },
+    { EOpDPdy,             "dFdy",             1,   TypeF,     ClassRegular, {} },
+    { EOpFwidth,           "fwidth",           1,   TypeF,     ClassRegular, {} }
+}};
 
 // For functions declared some other way, but still use the table to relate to operator.
 struct CustomFunction {
