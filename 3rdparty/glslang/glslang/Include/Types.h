@@ -307,21 +307,6 @@ typedef TVector<TTypeLoc> TTypeList;
 
 typedef TVector<TString*> TIdentifierList;
 
-//
-// Following are a series of helper enums for managing layouts and qualifiers,
-// used for TPublicType, TType, others.
-//
-
-enum TLayoutPacking {
-    ElpNone,
-    ElpShared,      // default, but different than saying nothing
-    ElpStd140,
-    ElpStd430,
-    ElpPacked,
-    ElpScalar,
-    ElpCount        // If expanding, see bitfield width below
-};
-
 enum TLayoutMatrix {
     ElmNone,
     ElmRowMajor,
@@ -573,7 +558,8 @@ public:
     }
 
     const char*         semanticName;
-    TStorageQualifier   storage   : 6;
+    TStorageQualifier   storage   : 7;
+    static_assert(EvqLast < 64, "need to increase size of TStorageQualifier bitfields!");
     TBuiltInVariable    builtIn   : 9;
     TBuiltInVariable    declaredBuiltIn : 9;
     static_assert(EbvLast < 256, "need to increase size of TBuiltInVariable bitfields!");
@@ -852,6 +838,8 @@ public:
         // -2048 as the default value indicating layoutSecondaryViewportRelative is not set
         layoutSecondaryViewportRelativeOffset = -2048;
         layoutShaderRecord = false;
+        layoutFullQuads = false;
+        layoutQuadDeriv = false;
         layoutHitObjectShaderRecordNV = false;
         layoutBindlessSampler = false;
         layoutBindlessImage = false;
@@ -948,6 +936,8 @@ public:
     bool layoutViewportRelative;
     int layoutSecondaryViewportRelativeOffset;
     bool layoutShaderRecord;
+    bool layoutFullQuads;
+    bool layoutQuadDeriv;
     bool layoutHitObjectShaderRecordNV;
 
     // GL_EXT_spirv_intrinsics
@@ -1055,6 +1045,8 @@ public:
     TLayoutFormat getFormat() const { return layoutFormat; }
     bool isPushConstant() const { return layoutPushConstant; }
     bool isShaderRecord() const { return layoutShaderRecord; }
+    bool isFullQuads() const { return layoutFullQuads; }
+    bool isQuadDeriv() const { return layoutQuadDeriv; }
     bool hasHitObjectShaderRecordNV() const { return layoutHitObjectShaderRecordNV; }
     bool hasBufferReference() const { return layoutBufferReference; }
     bool hasBufferReferenceAlign() const
@@ -1428,13 +1420,25 @@ class TTypeParameters {
 public:
     POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
 
-    TTypeParameters() : basicType(EbtVoid), arraySizes(nullptr) {}
+    TTypeParameters() : basicType(EbtVoid), arraySizes(nullptr), spirvType(nullptr) {}
 
     TBasicType basicType;
     TArraySizes *arraySizes;
+    TSpirvType *spirvType;
 
-    bool operator==(const TTypeParameters& rhs) const { return basicType == rhs.basicType && *arraySizes == *rhs.arraySizes; }
-    bool operator!=(const TTypeParameters& rhs) const { return basicType != rhs.basicType || *arraySizes != *rhs.arraySizes; }
+    bool operator==(const TTypeParameters& rhs) const
+    {
+        bool same = basicType == rhs.basicType && *arraySizes == *rhs.arraySizes;
+        if (same && basicType == EbtSpirvType) {
+            assert(spirvType && rhs.spirvType);
+            return *spirvType == *rhs.spirvType;
+        }
+        return same;
+    }
+    bool operator!=(const TTypeParameters& rhs) const
+    {
+        return !(*this == rhs);
+    }
 };
 
 //
@@ -1611,6 +1615,10 @@ public:
                                 }
                                 if (p.isCoopmatKHR() && p.typeParameters && p.typeParameters->arraySizes->getNumDims() > 0) {
                                     basicType = p.typeParameters->basicType;
+                                    if (isSpirvType()) {
+                                        assert(p.typeParameters->spirvType);
+                                        spirvType = p.typeParameters->spirvType;
+                                    }
 
                                     if (p.typeParameters->arraySizes->getNumDims() == 4) {
                                         const int dimSize = p.typeParameters->arraySizes->getDimSize(3);
@@ -2206,6 +2214,10 @@ public:
               
               if (qualifier.layoutShaderRecord)
                 appendStr(" shaderRecordNV");
+              if (qualifier.layoutFullQuads)
+                appendStr(" full_quads");
+              if (qualifier.layoutQuadDeriv)
+                appendStr(" quad_derivatives");
               if (qualifier.layoutHitObjectShaderRecordNV)
                 appendStr(" hitobjectshaderrecordnv");
 
@@ -2708,7 +2720,8 @@ public:
         if (isCoopMatKHR() && right.isCoopMatKHR()) {
             return ((getBasicType() == right.getBasicType()) || (getBasicType() == EbtCoopmat) ||
                     (right.getBasicType() == EbtCoopmat)) &&
-                   typeParameters == nullptr && right.typeParameters != nullptr;
+                   ((typeParameters == nullptr && right.typeParameters != nullptr) ||
+                    (typeParameters != nullptr && right.typeParameters == nullptr));
         }
         return false;
     }
@@ -2814,6 +2827,7 @@ protected:
             typeParameters = new TTypeParameters;
             typeParameters->arraySizes = new TArraySizes;
             *typeParameters->arraySizes = *copyOf.typeParameters->arraySizes;
+            *typeParameters->spirvType = *copyOf.typeParameters->spirvType;
             typeParameters->basicType = copyOf.basicType;
         }
 

@@ -20,7 +20,7 @@ jobs:
           { config: Release, platform: x64, bindir: 'win64_vs2019' },
         ]
     name: msvc-${{ matrix.config }}-${{ matrix.platform }}
-    runs-on: windows-2019
+    runs-on: windows-2022
     steps:
       - name: Checkout bgfx
         uses: actions/checkout@v3
@@ -61,7 +61,7 @@ jobs:
           { msystem: CLANG64, project: 'mingw-clang', bindir: 'win64_mingw-clang' },
         ]
     name: mingw-${{ matrix.msystem }}
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
       - name: Checkout bgfx
         uses: actions/checkout@v3
@@ -105,8 +105,8 @@ jobs:
           { config: debug, binsuffix: Debug },
           { config: release, binsuffix: Release },
         ]
-    name: linux-${{ matrix.config }}64
-    runs-on: ubuntu-22.04
+    name: linux-gcc-${{ matrix.config }}64
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout bgfx
         uses: actions/checkout@v3
@@ -126,7 +126,7 @@ jobs:
         run: |
           sudo apt install libgl-dev
           cd bgfx
-          make -j$(nproc) linux-${{ matrix.config }}64
+          make -j$(nproc) linux-gcc-${{ matrix.config }}64
       - name: Check
         run: |
           cd bgfx
@@ -134,42 +134,6 @@ jobs:
           ".build/linux64_gcc/bin/geometryc${{ matrix.binsuffix}}" --version
           ".build/linux64_gcc/bin/shaderc${{ matrix.binsuffix}}" --version
           ".build/linux64_gcc/bin/texturec${{ matrix.binsuffix}}" --version
-  wasm:
-    strategy:
-      fail-fast: true
-      matrix:
-        config: [ debug, release]
-    name: wasm-${{ matrix.config }}
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout bgfx
-        uses: actions/checkout@v3
-        with:
-          path: bgfx
-      - name: Checkout bx
-        uses: actions/checkout@v3
-        with:
-          repository: bkaradzic/bx
-          path: bx
-      - name: Checkout bimg
-        uses: actions/checkout@v3
-        with:
-          repository: bkaradzic/bimg
-          path: bimg
-      - name: Prepare
-        run: |
-          docker pull emscripten/emsdk
-          docker run --rm emscripten/emsdk which emcc em++ emar
-          cd bgfx
-          EMSCRIPTEN=/emsdk/upstream/emscripten ../bx/tools/bin/linux/genie --with-examples --gcc=wasm gmake
-      - name: Build
-        run: >
-          docker run --rm -u $(id -u):$(id -g) -v $(pwd):/bgfx emscripten/emsdk
-          make -C /bgfx/bgfx wasm-${{ matrix.config }} -j$(nproc) EMSCRIPTEN=/emsdk/upstream/emscripten
-      - name: Check
-        run: |
-          cd bgfx
-          ls -lash ".build/wasm/bin"
   osx:
     strategy:
       fail-fast: true
@@ -179,7 +143,7 @@ jobs:
           { config: release, binsuffix: Release },
         ]
     name: osx-x64-${{ matrix.config }}
-    runs-on: macos-latest
+    runs-on: macos-14
     steps:
       - name: Checkout bgfx
         uses: actions/checkout@v3
@@ -214,7 +178,7 @@ jobs:
           { platform: arm64  },
         ]
     name: android-${{ matrix.platform }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: nttld/setup-ndk@v1
         id: setup-ndk
